@@ -15,7 +15,7 @@ const ProfileEventsRow = ({data}) => {
                     <Text className='text-blue-500 text-sm' style={{fontFamily: 'Montserrat-Regular'}}>See all</Text>
                 </TouchableOpacity>
             </View>
-            <Carousel
+            {data && <Carousel
                 layout={"default"}
                 data={data}
                 sliderWidth={width * 0.94}
@@ -25,7 +25,7 @@ const ProfileEventsRow = ({data}) => {
                 renderItem={({item}) => (
                     item['events'].map((value) => (
                         <TouchableOpacity onPress={() => navigation.navigate('EventScreen', {slug: value.slug})} key={item.id} className='relative rounded-xl mt-7' style={{width: 250, backgroundColor: '#141923'}}>
-                            <Image source={require('../assets/vertical.jpg')} className='rounded-xl' style={{width: 250, height: 350}} />
+                            <Image source={{cache: "force-cache", uri: `http://192.168.1.34:8000${value.bannerVerticalImg}`}} className='rounded-xl' style={{width: 250, height: 350}} />
                             <View className='justify-center items-center rounded-xl' style={{zIndex: 1, width: '100%'}}>
                                 <View className='rounded-b-xl px-3 py-5' style={{zIndex: 1, width: '100%'}}>
                                     <Text className='text-white text-xs' style={{fontFamily: 'Montserrat-SemiBold'}}>{value.eventStartDate.substring(0,10)}</Text>
@@ -35,7 +35,7 @@ const ProfileEventsRow = ({data}) => {
                         </TouchableOpacity>
                     ))
                 )}
-            />
+            />}
         </>
     )
 }

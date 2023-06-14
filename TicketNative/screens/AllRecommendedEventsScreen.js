@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, SafeAreaView, Dimensions, ScrollView, ActivityIndicator } from 'react-native'
-import React, { useState } from 'react'
-import { useNavigation, useRoute } from '@react-navigation/native';
+import React from 'react'
+import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons'; 
 import SearchBlock from '../components/SearchBlock';
 import useFetchGet from '../hooks/useFetchGet';
@@ -9,7 +9,7 @@ const AllRecommendedEventsScreen = () => {
     const { width } = Dimensions.get('screen')
     const navigation = useNavigation()
 
-    const { data, isLoading, setChange, change } = useFetchGet(`http://192.168.1.34:8000/api/events/recomended`)
+    const { data, isLoading } = useFetchGet(`http://192.168.1.34:8000/api/events/recomended`)
 
     if (isLoading){
       return (

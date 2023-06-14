@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, Dimensions, ActivityIndicator, ScrollView, TouchableOpacity, Image, FlatList } from 'react-native'
-import React, { useState } from 'react'
+import React from 'react'
 import { useFonts } from 'expo-font'
 import HomeCategories from '../components/HomeCategories'
 import Carousel from 'react-native-snap-carousel';
@@ -9,10 +9,10 @@ import { Feather } from '@expo/vector-icons';
 import useFetchGet from '../hooks/useFetchGet';
 
 const HomeScreen = () => {
-  const { width, height } = Dimensions.get('screen')
+  const { width } = Dimensions.get('screen')
   const navigation = useNavigation()
 
-  const { data, isLoading, setChange, change } = useFetchGet('http://192.168.1.34:8000/api/home')
+  const { data, isLoading } = useFetchGet('http://192.168.1.34:8000/api/home')
 
   let [fontsLoaded] = useFonts({
     'Montserrat-Regular' : require('../assets/fonts/Montserrat-Regular.ttf'),
@@ -71,7 +71,6 @@ const HomeScreen = () => {
           <View className='mt-6 flex-row items-center justify-between mb-4' style={{width: width * 0.94}}>
             <Text className='text-gray-100 text-xl' style={{fontFamily: 'Montserrat-SemiBold'}}>Categories</Text>
           </View>
-          {/* <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{justifyContent: 'center', alignItems: 'start'}} style={{width: width * 0.94}}> */}
             <FlatList
               horizontal
               data={data['Categories']}
@@ -82,14 +81,9 @@ const HomeScreen = () => {
               showsHorizontalScrollIndicator={false}
               style={{width: width * 0.94}}
             />
-          {/* </ScrollView> */}
-
           <HomeVrow data={data['RecommendedEvents']} category='recomended' title='Recomended' row={false}/>
-
           <HomeVrow data={data['EventsLocation']} category='in-warsaw' title='In Warsaw' row={false}/>
-
           <HomeVrow data={data['EventsFestivals']} category='festival' title='Festivals' row={true}/>
-
         </ScrollView>
       </SafeAreaView>
     </>

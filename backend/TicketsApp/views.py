@@ -15,7 +15,7 @@ def MyTicketsScreen(request):
                 'Tickets': None,
             }
 
-            order = OrderModel.objects.filter(user = request.user, ordered = True)
+            order = OrderModel.objects.filter(user = request.user, ordered = True).order_by('-dataOrdered')
             if order.exists():
                 orderSerializer = OrderSerializer(order, many = True, context={'user': request.user})
                 response['Tickets'] = orderSerializer.data
@@ -188,6 +188,33 @@ def CheckoutScreen(request):
             except:
                 userSerializer = 'No User Data'
                 response['CheckoutInfo'] = userSerializer
+
+            return Response(response, status=status.HTTP_200_OK)
+        else:
+            response = {'Error': 'User Unauthorized'}
+            return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+    else:
+        response = {'Error': 'Bad Request'}
+        return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+
+@permission_classes([IsAuthenticated])
+@api_view(['POST'])
+def AcceptOrder(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            response = {
+                'Order': None,
+            }
+
+            try:
+                order = OrderModel.objects.get(id = request.data['orderId'])
+                order.ordered = True
+                order.save()
+                response['Order'] = "Order Created Successfuly"
+            except:
+                order = "Error While Creating Order"
+                response['Order'] = order
 
             return Response(response, status=status.HTTP_200_OK)
         else:

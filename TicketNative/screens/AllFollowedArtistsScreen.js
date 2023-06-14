@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, SafeAreaView, Dimensions, ActivityIndicator, FlatList } from 'react-native'
-import React, { useState } from 'react'
+import React from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons'; 
 import useFetchGet from '../hooks/useFetchGet';
@@ -9,7 +9,7 @@ const AllFollowedArtistsScreen = () => {
   const { width } = Dimensions.get('screen')
   const navigation = useNavigation()
 
-  const { data, isLoading, setChange, change } = useFetchGet('http://192.168.1.34:8000/api/followed-artists')
+  const { data, isLoading } = useFetchGet('http://192.168.1.34:8000/api/followed-artists')
 
   if (isLoading){
     return (

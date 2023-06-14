@@ -1,8 +1,8 @@
 import { View, Text, SafeAreaView, TextInput, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import { Formik } from 'formik'
 import KeyboardAvoidWrapper from '../components/KeyboardAvoidWrapper'
-import { useNavigation, useRoute } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 import { useFonts } from 'expo-font'
 import { AntDesign } from '@expo/vector-icons'; 
 import { EvilIcons } from '@expo/vector-icons';
@@ -15,7 +15,7 @@ const EditProfileInfoScreen = () => {
     const ref2 = useRef()
     const ref3 = useRef()
     const navigation = useNavigation()
-    const { width, height } = Dimensions.get('screen')
+    const { width } = Dimensions.get('screen')
 
     const { data, isLoading, setChange, change } = useFetchGet(`http://192.168.1.34:8000/api/user/info`)
 
@@ -37,7 +37,6 @@ const EditProfileInfoScreen = () => {
             })
             .then(res => res.json())
             .then((data) => {
-                // navigation.navigate('TabNav', {screen: 'ProfileScreen'})
                 setChange(!change)
                 console.log(data)
             })

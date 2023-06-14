@@ -1,13 +1,11 @@
 import { View, Text, TouchableOpacity, Dimensions } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React from 'react'
 import { AntDesign } from '@expo/vector-icons'; 
 import { FontAwesome5 } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
 import * as SecureStore from "expo-secure-store"
 
 const CartBlock = ({name, quantity, itemTotal, eventName, ticketId, setChange, change, orderItemId}) => {
     const { width } = Dimensions.get('screen')
-    const navigation = useNavigation()
 
     async function AddProduct() {
         await SecureStore.getItemAsync("accessToken").then(async(token) => {

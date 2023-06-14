@@ -1,7 +1,6 @@
 import { View, Text, TouchableOpacity, Dimensions } from 'react-native'
 import React from 'react'
 import HomeVblocks from './HomeVblocks';
-import HomeRblocks from './HomeRblocks';
 import SearchBlock from './SearchBlock';
 import { useNavigation } from '@react-navigation/native';
 

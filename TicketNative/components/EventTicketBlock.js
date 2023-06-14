@@ -1,10 +1,9 @@
-import { View, Text, TouchableOpacity, Dimensions } from 'react-native'
+import { View, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native'
 import * as SecureStore from "expo-secure-store"
 
 const EventTicketBlock = ({title, price, ticketId}) => {
-    const { width } = Dimensions.get('screen')
     const navigation = useNavigation()
 
     async function AddProduct() {

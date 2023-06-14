@@ -8,12 +8,12 @@ import { Entypo } from '@expo/vector-icons';
 import useFetchGet from '../hooks/useFetchGet';
 
 const ArtistScreen = () => {
-    const { width, height } = Dimensions.get('screen')
+    const { width } = Dimensions.get('screen')
     const navigation = useNavigation()
     const [show, setShow] = useState(false)
     const route = useRoute()
 
-    const { data, isLoading, setChange, change } = useFetchGet(`http://192.168.1.34:8000/api/artist/${route.params.slug}`)
+    const { data } = useFetchGet(`http://192.168.1.34:8000/api/artist/${route.params.slug}`)
   
     return (
         <View className='items-center w-screen bg-[#0c0f15] flex-1'>

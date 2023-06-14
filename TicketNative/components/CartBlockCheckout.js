@@ -1,8 +1,7 @@
-import { View, Text, TouchableOpacity, Dimensions } from 'react-native'
-import React, { useState } from 'react'
-import { FontAwesome5 } from '@expo/vector-icons';
+import { View, Text, Dimensions } from 'react-native'
+import React from 'react'
 
-const CartBlockCheckout = ({quantity, id, eventName, ticketName, itemTotal}) => {
+const CartBlockCheckout = ({quantity, eventName, ticketName, itemTotal}) => {
     const { width } = Dimensions.get('screen')
 
     return (

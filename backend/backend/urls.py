@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -27,6 +27,7 @@ from django.conf import settings
 from searchApp.views import *
 from profileApp.views import *
 from TicketsApp.views import *
+from paymentApp.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -43,6 +44,9 @@ urlpatterns = [
     path('api/event/by-category/<slug:slug>', EventByCategory, name='EventByCategory'),
     path('api/events/recomended', AllRecomendedEvents, name='AllRecomendedEvents'),
     path('api/events/location', AllLocationEventsScreen, name='AllLocationEventsScreen'),
+
+    # Stripe Payment
+    path('api/stripe/payment', StripePayment, name='StripePayment'),
 
     # SearchApp
     path('api/search', SearchScreen, name='SearchScreen'),
@@ -62,5 +66,6 @@ urlpatterns = [
     path('api/cart/remove/<int:orderItemId>', RemoveFromCart, name='RemoveFromCart'),
     path('api/cart/remove-per/<int:orderItemId>', RemoveFromCartPrenamently, name='RemoveFromCartPrenamently'),
     path('api/checkout', CheckoutScreen, name='CheckoutScreen'),
+    path('api/accept-order-payment', AcceptOrder, name='AcceptOrder'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -9,7 +9,6 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const RegisterScreen = () => {
     const ref1 = useRef()
-    const ref2 = useRef()
     const [hiddenPassword, setHiddenPassword] = useState(true)
     const navigation = useNavigation()
 

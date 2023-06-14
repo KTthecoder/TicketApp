@@ -36,7 +36,7 @@ const useFetchGet = (url, another) => {
         }
     }, [change])
     
-  return {data, isLoading, setChange, change}
+  return {data, isLoading, setChange, change, setData}
 }
 
 export default useFetchGet

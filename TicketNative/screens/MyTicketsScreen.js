@@ -1,12 +1,29 @@
-import { View, Text, ScrollView, SafeAreaView, Dimensions, ActivityIndicator, FlatList } from 'react-native'
-import React from 'react'
+import { View, Text, SafeAreaView, Dimensions, ActivityIndicator, FlatList, RefreshControl } from 'react-native'
+import React, { useState } from 'react'
 import MyTicketBlock from '../components/MyTicketBlock';
 import useFetchGet from '../hooks/useFetchGet';
+import * as SecureStore from "expo-secure-store"
 
 const MyTicketsScreen = () => {
   const { width } = Dimensions.get('screen')
+  const [ refreshing, setRefreshing ] = useState(false)
 
-  const { data, isLoading, setChange, change } = useFetchGet('http://192.168.1.34:8000/api/my-tickets')
+  const { data, isLoading, setData } = useFetchGet('http://192.168.1.34:8000/api/my-tickets')
+
+  const onRefresh = React.useCallback(async () => {
+    await SecureStore.getItemAsync("accessToken").then(async(token) => {
+      let response = await fetch('http://192.168.1.34:8000/api/my-tickets', {
+          method: "GET",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization' : 'Bearer ' + token
+          },
+      })
+      let data = await response.json()
+      console.log('Reloaded')
+      setData(data)
+  })
+  }, []);
 
   if (isLoading){
     return (
@@ -27,6 +44,11 @@ const MyTicketsScreen = () => {
         <FlatList
           showsVerticalScrollIndicator={false} 
           contentContainerStyle={{marginTop: -10, paddingBottom: 100}}
+          refreshControl={<RefreshControl
+            colors={["#fff", "#fff"]}
+            refreshing={refreshing}
+            onRefresh={onRefresh} 
+          />}
           data={data['Tickets']}
           renderItem={({item}) => (
             item['orderItem'].map((value) => (

@@ -1,21 +1,97 @@
-import { View, Text, TouchableOpacity, SafeAreaView, Dimensions, ScrollView, TextInput, ActivityIndicator } from 'react-native'
-import React, { useRef, useState } from 'react'
+import { View, Text, TouchableOpacity, SafeAreaView, Dimensions, ScrollView, ActivityIndicator, Alert } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons'; 
 import CartBlockCheckout from '../components/CartBlockCheckout';
-import KeyboardAvoidWrapper from '../components/KeyboardAvoidWrapper';
-import { Formik } from 'formik'
-import { Feather } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import useFetchGet from '../hooks/useFetchGet';
+import { CardField, useConfirmPayment } from '@stripe/stripe-react-native';
+import * as SecureStore from "expo-secure-store"
 
 const TicketCheckoutScreen = () => {
   const { width } = Dimensions.get('screen')
   const navigation = useNavigation()
-  const ref1 = useRef()
-  const ref2 = useRef()
+  const [cardDetails, setCardDetails] = useState()
+  const { confirmPayment, loading } = useConfirmPayment()
+  const [email, setEmail] = useState()
+  const [orderTotal, setOrderTotal] = useState()
+  const [orderId, setOrderId] = useState()
   
   const { data, isLoading, setChange, change } = useFetchGet('http://192.168.1.34:8000/api/checkout')
+
+  const GetStripeKey = async () => {
+    let response = await fetch('http://192.168.1.34:8000/api/stripe/payment', {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        orderTotal: orderTotal,
+      })
+    })
+    const clientSecret = await response.json()
+    return {clientSecret}
+  }
+
+  useEffect(() => {
+    if(data){
+      setEmail(data['CheckoutInfo']['email'])
+      setOrderTotal(data['OrderTotal'])
+      setOrderId(data['OrderItems'][0]['order'])
+    }
+  }, [data])
+
+  const handlePayment = async () => {
+    if(!cardDetails?.complete){
+      Alert.alert('Please enter card details')
+      return
+    }
+
+    const billingDetails = {
+      email: email
+    }
+
+    try{
+      const { clientSecret } = await GetStripeKey()
+      if(clientSecret['Error']){
+        alert('Error while creating payment')
+      }
+      else{
+        const { paymentIntent, error } = await confirmPayment(
+          clientSecret, {
+            paymentMethodType: "Card",
+            paymentMethodData: billingDetails,
+          }
+        )
+        if(error){
+          alert(`Payment Confirmation Error ${error.message}`)
+        }
+        else if(paymentIntent){
+
+          await SecureStore.getItemAsync("accessToken").then(async(token) => {
+            let response = await fetch(`http://192.168.1.34:8000/api/accept-order-payment`, {
+              method: "POST",
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization' : 'Bearer ' + token
+              },
+              body: JSON.stringify({
+                orderId: orderId,
+              })
+            })
+            const data = await response.json()
+          })
+
+          alert("Payment Succesful")
+          setChange(!change)
+          navigation.navigate('TabNav', {screen: 'MyTicketDetailsScreen'})
+        }
+      }
+    }
+    catch (e){
+      console.log(e)
+    }
+  }
 
   if (isLoading){
     return (
@@ -41,13 +117,13 @@ const TicketCheckoutScreen = () => {
 
       <View className='absolute bottom-0 bg-[#0c0f15]' style={{zIndex: 1, height: 145, width: width, justifyContent: 'center', alignItems: 'center'}}>
         <View className='absolute bottom-16' style={{zIndex: 1, width: width * 0.94}}>
-          <TouchableOpacity style={{width: '100%', zIndex: 1}} onPress={() => {}} className='justify-center items-center bg-blue-500 pt-4 pb-4 rounded-md mt-9'>
+          <TouchableOpacity style={{width: '100%', zIndex: 1}} onPress={() => handlePayment()} disabled={loading} className='justify-center items-center bg-blue-500 pt-4 pb-4 rounded-md mt-9'>
             <Text className='text-white text-base' style={{fontFamily: 'Montserrat-SemiBold'}}>Pay ${data && data['OrderTotal']}</Text>
           </TouchableOpacity>
         </View>
       </View>
       
-      <ScrollView contentContainerStyle={{paddingBottom: 150}} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={{paddingBottom: 150, width: width * 0.94}} showsVerticalScrollIndicator={false}>
         <View className='justify-start w-sceeen flex-row items-center mt-5 bg-[#141923] rounded-xl px-5'>
           <View className='w-screen flex-1 justify-center' style={{height: 55}}>
             <Text className='text-base' style={{fontFamily: 'Montserrat-Regular', color: 'white'}}>{data && data['CheckoutInfo']['first_name']}</Text>
@@ -64,6 +140,22 @@ const TicketCheckoutScreen = () => {
           <View className='w-screen flex-1 justify-center' style={{height: 55}}>
             <Text className='text-base' style={{fontFamily: 'Montserrat-Regular', color: 'white'}}>{data && data['CheckoutInfo']['email']}</Text>
           </View>
+        </View>
+
+        <View className='justify-start w-sceeen flex-row items-center mt-5 bg-[#141923] rounded-xl text-white'>
+          <CardField
+          postalCodeEnabled={false}
+            placeholders={{
+              number: "4242 4242 4242 4242",
+            }}
+            onCardChange={cardDetails => {
+              setCardDetails(cardDetails)
+            }}
+            cardStyle={{
+              textColor: '#ffffff',
+            }}
+            style={{width: '100%', height: 55, color: 'white'}}
+          />
         </View>
         
         <Text className='text-white text-xl mb-3 mt-10 text-center' style={{fontFamily: 'Montserrat-SemiBold', width: width * 0.94}}>Your Tickets</Text>

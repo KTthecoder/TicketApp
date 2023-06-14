@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, SafeAreaView, Dimensions, ScrollView, ActivityIndicator } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons'; 
 import CartBlock from '../components/CartBlock';
@@ -33,9 +33,12 @@ const CartScreen = () => {
         </View>
       </View>
       <View className='absolute bottom-16' style={{zIndex: 1, width: width * 0.94}}>
-        <TouchableOpacity style={{width: '100%', zIndex: 1}} onPress={() => {navigation.navigate('TicketCheckoutScreen')}} className='justify-center items-center bg-blue-500 pt-4 pb-4 rounded-md mt-9'>
-          <Text className='text-white text-base' style={{fontFamily: 'Montserrat-SemiBold'}}>Go To Checkout</Text>
-        </TouchableOpacity>
+        {data && data['Response'] === "Your Shopping Cart is Empty" ? null : 
+          <TouchableOpacity style={{width: '100%', zIndex: 1}} onPress={() => {navigation.navigate('TicketCheckoutScreen')}} className='justify-center items-center bg-blue-500 pt-4 pb-4 rounded-md mt-9'>
+            <Text className='text-white text-base' style={{fontFamily: 'Montserrat-SemiBold'}}>Go To Checkout</Text>
+          </TouchableOpacity>
+        }
+       
       </View>
       <ScrollView>
         {data && data['Response'] != "Your Shopping Cart is Empty" ? data['OrderItems'].map((item) => (
@@ -47,7 +50,6 @@ const CartScreen = () => {
             <Text className='text-blue-500 text-xl' style={{fontFamily: 'Montserrat-SemiBold'}}>${data && data['OrderTotal']}</Text>
           </View> 
         : null}
-        
       </ScrollView>
     </SafeAreaView>
   )

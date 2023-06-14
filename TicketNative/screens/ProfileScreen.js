@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, SafeAreaView, Dimensions, TouchableOpacity, ActivityIndicator, FlatList } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { EvilIcons } from '@expo/vector-icons';
 import ProfileArtistBlock from '../components/ProfileArtistBlock';
 import ProfileEventsRow from '../components/ProfileEventsRow';
@@ -12,7 +12,7 @@ const ProfileScreen = () => {
   const navigation = useNavigation()
   const { logoutUser } = useContext(AuthContext)
 
-  const { data, isLoading, setChange, change } = useFetchGet('http://192.168.1.34:8000/api/profile', true)
+  const { data, isLoading } = useFetchGet('http://192.168.1.34:8000/api/profile', true)
 
   if (isLoading){
     return (
@@ -44,14 +44,16 @@ const ProfileScreen = () => {
           </View> 
         </View>
 
-        <View className='mt-8 flex-row items-center justify-between' style={{width: width * 0.94}}>
-          <Text className='text-gray-100 text-xl' style={{fontFamily: 'Montserrat-SemiBold'}}>Followed Artists</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('AllFollowedArtistsScreen')}>
-            <Text className='text-blue-500 text-sm' style={{fontFamily: 'Montserrat-Regular'}}>See all</Text>
-          </TouchableOpacity>
-        </View>
+        {data && data['FollowedArtists'] != "No Followed Artists" ?
+          <View className='mt-8 flex-row items-center justify-between' style={{width: width * 0.94}}>
+            <Text className='text-gray-100 text-xl' style={{fontFamily: 'Montserrat-SemiBold'}}>Followed Artists</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('AllFollowedArtistsScreen')}>
+              <Text className='text-blue-500 text-sm' style={{fontFamily: 'Montserrat-Regular'}}>See all</Text>
+            </TouchableOpacity>
+          </View>
+        : null}
 
-        {/* <ScrollView horizontal showsHorizontalScrollIndicator={false} className='mb-7' contentContainerStyle={{justifyContent: 'center', alignItems: 'start'}} style={{width: width * 0.94}}> */}
+        {data && data['FollowedArtists'] != "No Followed Artists" ?
           <FlatList
             data={data['FollowedArtists']}
             showsHorizontalScrollIndicator={false}
@@ -63,9 +65,11 @@ const ProfileScreen = () => {
               <ProfileArtistBlock artists={item['artists']} />
             )}
           />
-        {/* </ScrollView> */}
+        : null}
 
-        <ProfileEventsRow data={data['FollowedEvents']}/>
+        {data && data['FollowedEvents'] != "No Followed Events" ?
+          <ProfileEventsRow data={data['FollowedEvents']}/>
+        : null} 
 
         <TouchableOpacity onPress={() => logoutUser()} className='rounded-xl bg-red-600 justify-center items-center mt-14'>
           <Text className='text-gray-300 text-base py-3' style={{fontFamily: 'Montserrat-SemiBold'}}>Logout</Text>

@@ -6,11 +6,11 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import useFetchGet from '../hooks/useFetchGet';
 
 const MyTicketDetailsScreen = () => {
-  const { width, height } = Dimensions.get('screen')
+  const { width } = Dimensions.get('screen')
   const navigation = useNavigation()
   const route = useRoute()
 
-  const { data, isLoading, setChange, change } = useFetchGet(`http://192.168.1.34:8000/api/my-tickets/${route.params.id}`)
+  const { data, isLoading } = useFetchGet(`http://192.168.1.34:8000/api/my-tickets/${route.params.id}`)
 
   if (isLoading){
     return (

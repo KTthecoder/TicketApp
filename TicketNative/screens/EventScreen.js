@@ -9,12 +9,12 @@ import EventTicketBlock from '../components/EventTicketBlock';
 import useFetchGet from '../hooks/useFetchGet';
 
 const EventScreen = () => {
-    const { width, height } = Dimensions.get('screen')
+    const { width } = Dimensions.get('screen')
     const navigation = useNavigation()
     const [show, setShow] = useState(false)
     const route = useRoute()
 
-    const { data, isLoading, setChange, change } = useFetchGet(`http://192.168.1.34:8000/api/event/details/${route.params.slug}`)
+    const { data, isLoading } = useFetchGet(`http://192.168.1.34:8000/api/event/details/${route.params.slug}`)
 
     if (isLoading){
         return (
@@ -35,7 +35,6 @@ const EventScreen = () => {
             </View>
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{justifyContent: 'center', alignItems: 'center', paddingBottom: 110}}>
                 <View className='relative'>
-                    {/* <View className='absolute' style={{width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.455)', zIndex: 1}}></View> */}
                     <Image source={{cache: "force-cache", uri: `http://192.168.1.34:8000${data['Event']['bannerHorizontalImg']}`}} style={{width: width, height: 260}} />
                 </View>
                 <View className='justify-center items-center mt-5' style={{width: '100%', zIndex: 1}}>

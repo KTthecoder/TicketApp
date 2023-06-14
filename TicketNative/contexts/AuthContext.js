@@ -2,7 +2,6 @@ import React from 'react'
 import { createContext, useEffect, useState } from "react";
 import jwt_decode from "jwt-decode";
 import * as SecureStore from "expo-secure-store"
-import { useNavigation } from '@react-navigation/native';
 
 export const AuthContext = createContext()
 
@@ -12,7 +11,6 @@ const AuthProvider = (props) => {
     let [user, setUser] = useState(async () => await SecureStore.getItemAsync('accessToken') ? jwt_decode(await SecureStore.getItemAsync('accessToken')) : null)
     let [loading, setLoading] = useState(false)
     let [isLoading, setIsLoading] = useState(true)
-    const navigation = useNavigation()
 
     async function loginUser(username, password) {
         let response = await fetch('http://192.168.1.34:8000/api/token/', {
@@ -69,11 +67,9 @@ const AuthProvider = (props) => {
                 setAccessToken(data['access'])
                 setUser(jwt_decode(data['access']))
                 await SecureStore.setItemAsync('accessToken', data['access'])
-                    
                 GetToken()
             }
             else{
-                // logoutUser()
                 console.log(data)
             }
 
@@ -81,22 +77,6 @@ const AuthProvider = (props) => {
                 setLoading(false)
             }
         })
-        
-        // let data = await response.json()
-
-        // if(response.status == 200){
-        //     setAccessToken(data['access'])
-        //     setUser(jwt_decode(data['access']))
-        //     console.log('User is stil logged in')
-        //     SecureStore.setItemAsync('accessToken', data['access'])
-        // }
-        // else{
-        //     logoutUser()
-        // }
-
-        // if(loading){
-        //     setLoading(false)
-        // }
     }
 
     async function GetToken() {

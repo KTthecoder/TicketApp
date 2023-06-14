@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TextInput, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native'
+import { View, Text, SafeAreaView, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useContext, useRef, useState } from 'react'
 import { Formik } from 'formik'
 import KeyboardAvoidWrapper from '../components/KeyboardAvoidWrapper'
@@ -23,8 +23,6 @@ const LoginScreen = () => {
     if (!fontsLoaded){
         return <ActivityIndicator size='large' />
     }
-
-    const { width, height } = Dimensions.get('screen')
 
     return (
         <KeyboardAvoidWrapper>

@@ -1,4 +1,4 @@
-import { View, Text, ActivityIndicator } from 'react-native'
+import { View, ActivityIndicator } from 'react-native'
 import React, { useContext } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import LoginScreen from '../screens/LoginScreen'
@@ -55,8 +55,6 @@ const Navigation = () => {
                     <Stack.Screen name='AllLocationEventsScreen' component={AllLocationEventsScreen} options={{headerShown: false}}/> 
                 </>           
             )}    
-            
-            
         </Stack.Navigator>
     )
 }

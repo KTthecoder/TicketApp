@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, SafeAreaView, Dimensions, ScrollView, ActivityIndicator } from 'react-native'
-import React, { useState } from 'react'
+import React from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons'; 
 import SearchBlock from '../components/SearchBlock';
@@ -10,7 +10,7 @@ const RowByCategoryScreen = () => {
     const navigation = useNavigation()
     const route = useRoute()
 
-    const { data, isLoading, setChange, change } = useFetchGet(`http://192.168.1.34:8000/api/event/by-category/${route.params.slug}`)
+    const { data, isLoading } = useFetchGet(`http://192.168.1.34:8000/api/event/by-category/${route.params.slug}`)
 
     if (isLoading){
       return (
